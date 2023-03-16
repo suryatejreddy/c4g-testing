@@ -8,11 +8,12 @@ st.set_page_config(page_title="CSV Viewer App")
 st.title("CSV Viewer App")
 
 # Create sidebar for file upload
-uploaded_file = st.sidebar.file_uploader("Choose a CSV file", type=["csv"])
+uploaded_file = st.sidebar.file_uploader("Choose a CSV file", type=["csv"], accept_multiple_files=True)
 
 # Display table if file is uploaded
-if uploaded_file is not None:
+if uploaded_file:
     ## allow multiple file uploads
+    uploaded_file = uploaded_file[0]
     df = pd.read_csv(uploaded_file).reset_index(drop=True)
     df = df.filter(regex='^(?!Unnamed)')
 
@@ -55,7 +56,6 @@ if uploaded_file is not None:
     # For each column, display a collapsible section that shows statistics for that column
     with st.expander("View Summary Statistics"):
         column_types = df.dtypes.to_dict()
-        print (column_types)
         for column_name, column_type in column_types.items():
             st.write(df[column_name].describe())
     
